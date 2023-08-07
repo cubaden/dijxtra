@@ -2,6 +2,7 @@
 #include <vector>
 #include <queue>
 #include <bits/stdc++.h>
+#include <gtest/gtest.h>
 
 using namespace std;
 
@@ -102,4 +103,26 @@ void print_path(const Graph &g, int s, int d, vector<int> &predecessors) {
     cout << v << " ";
   }
   cout << endl;
+}
+
+int getInt()
+{
+  return 5;
+}
+
+TEST(SquareRootTest, PositiveNos) { 
+    ASSERT_EQ(5, getInt());
+
+}
+ 
+/*
+TEST(SquareRootTest, NegativeNos) {
+    ASSERT_EQ(-1.0, squareRoot(-15.0));
+    ASSERT_EQ(-1.0, squareRoot(-0.2));
+}
+*/
+ 
+int main(int argc, char **argv) {
+    testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }
