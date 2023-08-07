@@ -118,7 +118,8 @@ TEST(SimpleGraphInitTest, PositiveNos) {
  
 int main(int argc, char **argv) {
 
-  Graph g(6);
+  auto numberVertices = 6;
+  Graph g(numberVertices);
 
   g.add_edge(0, 1, 7);
   g.add_edge(0, 2, 9);
@@ -130,11 +131,11 @@ int main(int argc, char **argv) {
   g.add_edge(3, 4, 6);
   g.add_edge(4, 5, 9);
 
-  vector<int> distances;
-  vector<int> predecessors;
+  vector<int> distances(numberVertices, INT_MAX);
+  vector<int> predecessors(numberVertices, -1);
 
-  //dijkstra(g, 0, distances, predecessors);
-  //std::cout << print_path(g, 1, 4, predecessors) << std::endl;
+  dijkstra(g, 0, distances, predecessors);
+  std::cout << print_path(g, 0, 3, predecessors) << std::endl;
 
   //testing::InitGoogleTest(&argc, argv);
   //return RUN_ALL_TESTS();
