@@ -1,134 +1,105 @@
-#include<iomanip>
-#include<iostream>
-#include<string.h>
-#include<stdio.h>
-#include<stdlib.h>
-
-#define word unsigned int
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <bits/stdc++.h>
 
 using namespace std;
 
-int i, j, n, p, xn, xk;
+// This class represents a graph.
+class Graph {
+public:
+  // Constructor.
+  Graph(int n) {
+    vertices_ = n;
+    edges_ = vector<vector<int>>(vertices_, vector<int>());
+  }
 
-int flag[11];
-word c[11][11], l[11];
-char s[80], path[80][11];
+  // Add an edge to the graph.
+  void add_edge(int u, int v, int w) {
+    edges_[u].push_back(v);
+    edges_[v].push_back(u);
+    weights_[u][v] = w;
+    weights_[v][u] = w;
+  }
 
-int min(int n)
-{
-	int i, result;
-	for(i=0;i<n;i++)
-	    if(!(flag[i])) 
-		    result=i;
+  // Get the number of vertices.
+  int num_vertices() const {
+    return vertices_;
+  }
 
-	for(i=0;i<n;i++)
-		if((l[result]>l[i])&&(!flag[i])) 
-			result=i;
+  // Get the adjacency list for a vertex.
+  const vector<int> &adj(int u) const {
+    return edges_[u];
+  }
 
-	return result;
-}
+  // Get the weight of an edge.
+  int weight(int u, int v) const {
+    return weights_[u][v];
+  }
 
-word minim(word x, word y)
-{
-	if(x<y)
-		return x;
-	return y;
-}
+private:
+  int vertices_;
+  vector<vector<int>> edges_;
+  vector<vector<int>> weights_;
+};
 
-void main()
-{   
-    setlocale(LC_ALL, "ukr");
-	cout<<"Введіть кількість точок: ";
-	cin>>n;
-	for(i=0;i<n;i++)
-	    for(j=0;j<n;j++) c[i][j]=0;
+// This function finds the shortest path from the source vertex `s` to all other vertices in the graph `g`.
+// The distance between two vertices `u` and `v` is stored in the array `distances`.
+// The path from `s` to `v` is stored in the array `predecessors`.
+void dijkstra(const Graph &g, int s, vector<int> &distances, vector<int> &predecessors) {
+  // Initialize the distances and predecessors.
+  for (int v = 0; v < g.num_vertices(); v++) {
+    distances[v] = INT_MAX;
+    predecessors[v] = -1;
+  }
 
-	for(i=0;i<n;i++)
-    	for(j=i+1;j<n;j++)
-        {
-            cout<<"Введіть відстань від x"<<i+1<<" до x"<<j+1<<": ";
-            cin>>c[i][j];
-        }
+  // Set the distance to the source vertex to 0.
+  distances[s] = 0;
 
-	cout<<" ";
+  // Create a priority queue to store the vertices that are still to be processed.
+  priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> queue;
+  queue.push({0, s});
 
-	for(i=0;i<n;i++) cout<<" X"<<i+1;
+  // While the queue is not empty, do the following:
+  while (!queue.empty()) {
+    // Pop the vertex with the minimum distance from the queue.
+    int u = queue.top().second;
+    queue.pop();
 
-	cout<<endl<<endl;
-
-	for(i=0;i<n;i++)
-    {
-        printf("X%d",i+1);
-	    for(j=0;j<n;j++)
-		{
-		    printf("%6d",c[i][j]);
-		    c[j][i]=c[i][j];
-	    }
-		printf("\n\n");
+    // For each neighbor `v` of `u`, do the following:
+    for (int v : g.adj(u)) {
+      // If the distance to `v` through `u` is less than the current distance to `v`, do the following:
+      if (distances[v] > distances[u] + g.weight(u, v)) {
+        distances[v] = distances[u] + g.weight(u, v);
+        predecessors[v] = u;
+        queue.push({distances[v], v});
+      }
     }
+  }
+}
 
-	for(i=0;i<n;i++)
-		for(j=0;j<n;j++)
-        	if(c[i][j]==0) c[i][j]=65535; //безкінечність
-	
-    cout<<"Введіть початкові точки: ";
-	cin>>xn;
-	cout<<"Введіть кінцеві точки: ";
-	cin>>xk;
-	xk--;
-	xn--;
-	
-    if(xn==xk)
-	{
-	    cout<<"Початкова і кінцева точки збігаються."<<endl;
-        //getch();
-        return;
-	}
+// This function prints the shortest path from the source vertex `s` to the destination vertex `d`.
+void print_path(const Graph &g, int s, int d, vector<int> &predecessors) {
+  // If the destination vertex is not reachable from the source vertex, do the following:
+  if (predecessors[d] == -1) {
+    cout << "No path from " << s << " to " << d << endl;
+    return;
+  }
 
-	for(i=0;i<n;i++)
-	{
-		flag[i]=0;
-		l[i]=65535;
-	}
-	
-    l[xn]=0;
-	flag[xn]=1;
-	p=xn;
-	auto str = std::to_string(xn); //itoa(xn+1,s,10);
-    strcpy(s, str.c_str());
-	
-    for(i=1;i<=n;i++)
-	{
-		strcpy(path[i],"X");
-		strcat(path[i],s);
-	}
-	
-    do
-	{
-	    for(i=0;i<n;i++)
-	    if((c[p][i]!=65535)&&(!flag[i])&&(i!=p))
-	    {
-		    if(l[i]>l[p]+c[p][i])
-	        {
-                auto str = std::to_string(i); //itoa(i+1,s,10);
-                strcpy(s, str.c_str());
-		        strcpy(path[i+1],path[p+1]);
-		        strcat(path[i+1],"-X");
-		        strcat(path[i+1],s);
-	        }
-		    l[i]=minim(l[i],l[p]+c[p][i]);
-        }
-		p=min(n);
-		flag[p]=1;
-	}
-	while(p!=xk);
+  // Create a vector to store the vertices on the path.
+  vector<int> path;
+  int u = d;
+  while (u != -1) {
+    path.push_back(u);
+    u = predecessors[u];
+  }
 
-	if(l[p]!=65535)
-	{
-        cout<<"Шлях: "<<path[p+1]<<endl;
-        cout<<"Довжина шляху: "<<l[p]<<endl;
-	}
-	else
-        cout<<"Такого шляху не існує"<<endl;
-    //getch();
+  // Reverse the order of the vertices in the vector.
+  reverse(path.begin(), path.end());
+
+  // Print the vertices on the path.
+  for (int v : path) {
+    cout << v << " ";
+  }
+  cout << endl;
 }
