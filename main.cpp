@@ -30,7 +30,7 @@ public:
   }
 
   // Get the adjacency list for a vertex.
-  const vector<int> &adj(int u) const {
+  const std::vector<int>& adj(int u) const {
     return edges_[u];
   }
 
@@ -48,7 +48,7 @@ private:
 // This function finds the shortest path from the source vertex `s` to all other vertices in the graph `g`.
 // The distance between two vertices `u` and `v` is stored in the array `distances`.
 // The path from `s` to `v` is stored in the array `predecessors`.
-void dijkstra(const Graph &g, int s, vector<int> &distances, vector<int> &predecessors) {
+void dijkstra(const Graph& g, int s, std::vector<int>& distances, std::vector<int>& predecessors) {
   // Initialize the distances and predecessors.
   for (int v = 0; v < g.num_vertices(); v++) {
     distances[v] = INT_MAX;
@@ -81,7 +81,7 @@ void dijkstra(const Graph &g, int s, vector<int> &distances, vector<int> &predec
 }
 
 // This function prints the shortest path from the source vertex `s` to the destination vertex `d`.
-std::string print_path(const Graph &g, int s, int d, vector<int> &predecessors) {
+std::string print_path(const Graph& g, int s, int d, vector<int>& predecessors) {
   // If the destination vertex is not reachable from the source vertex, do the following:
   if (predecessors[d] == -1) {
     std::cout << "No path from " << s << " to " << d << endl;
@@ -99,7 +99,7 @@ std::string print_path(const Graph &g, int s, int d, vector<int> &predecessors) 
   // Reverse the order of the vertices in the vector.
   reverse(path.begin(), path.end());
 
-  std::string result("");
+  std::string result;
 
   // Print the vertices on the path.
   for (int v : path) {
