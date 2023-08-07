@@ -13,6 +13,7 @@ public:
   Graph(int n) {
     vertices_ = n;
     edges_ = vector<vector<int>>(vertices_, vector<int>());
+    weights_.resize(vertices_, vector<int>(vertices_));
   }
 
   // Add an edge to the graph.
@@ -40,8 +41,8 @@ public:
 
 private:
   int vertices_;
-  vector<vector<int>> edges_;
-  vector<vector<int>> weights_;
+  std::vector<std::vector<int>> edges_;
+  std::vector<std::vector<int>> weights_;
 };
 
 // This function finds the shortest path from the source vertex `s` to all other vertices in the graph `g`.
@@ -80,11 +81,11 @@ void dijkstra(const Graph &g, int s, vector<int> &distances, vector<int> &predec
 }
 
 // This function prints the shortest path from the source vertex `s` to the destination vertex `d`.
-void print_path(const Graph &g, int s, int d, vector<int> &predecessors) {
+std::string print_path(const Graph &g, int s, int d, vector<int> &predecessors) {
   // If the destination vertex is not reachable from the source vertex, do the following:
   if (predecessors[d] == -1) {
-    cout << "No path from " << s << " to " << d << endl;
-    return;
+    std::cout << "No path from " << s << " to " << d << endl;
+    return "none";
   }
 
   // Create a vector to store the vertices on the path.
@@ -98,31 +99,44 @@ void print_path(const Graph &g, int s, int d, vector<int> &predecessors) {
   // Reverse the order of the vertices in the vector.
   reverse(path.begin(), path.end());
 
+  std::string result("");
+
   // Print the vertices on the path.
   for (int v : path) {
-    cout << v << " ";
+    result += std::to_string(v) + " ";
   }
-  cout << endl;
+
+  return result;
 }
 
-int getInt()
-{
-  return 5;
-}
-
-TEST(SquareRootTest, PositiveNos) { 
-    ASSERT_EQ(5, getInt());
-
-}
- 
 /*
-TEST(SquareRootTest, NegativeNos) {
-    ASSERT_EQ(-1.0, squareRoot(-15.0));
-    ASSERT_EQ(-1.0, squareRoot(-0.2));
+TEST(SimpleGraphInitTest, PositiveNos) { 
+
+  ASSERT_EQ("1 3 4 ", path);
 }
 */
  
 int main(int argc, char **argv) {
-    testing::InitGoogleTest(&argc, argv);
-    return RUN_ALL_TESTS();
+
+  Graph g(6);
+
+  g.add_edge(0, 1, 7);
+  g.add_edge(0, 2, 9);
+  g.add_edge(0, 5, 14);
+  g.add_edge(1, 2, 10);
+  g.add_edge(1, 3, 15);
+  g.add_edge(2, 5, 2);
+  g.add_edge(2, 3, 11);
+  g.add_edge(3, 4, 6);
+  g.add_edge(4, 5, 9);
+
+  vector<int> distances;
+  vector<int> predecessors;
+
+  //dijkstra(g, 0, distances, predecessors);
+  //std::cout << print_path(g, 1, 4, predecessors) << std::endl;
+
+  //testing::InitGoogleTest(&argc, argv);
+  //return RUN_ALL_TESTS();
+  return 0;
 }
