@@ -81,7 +81,7 @@ void main()
     if(xn==xk)
 	{
 	    cout<<"Початкова і кінцева точки збігаються."<<endl;
-        getch();
+        //getch();
         return;
 	}
 
@@ -94,7 +94,8 @@ void main()
     l[xn]=0;
 	flag[xn]=1;
 	p=xn;
-	itoa(xn+1,s,10);
+	auto str = std::to_string(xn); //itoa(xn+1,s,10);
+    strcpy(s, str.c_str());
 	
     for(i=1;i<=n;i++)
 	{
@@ -109,7 +110,8 @@ void main()
 	    {
 		    if(l[i]>l[p]+c[p][i])
 	        {
-		        itoa(i+1,s,10);
+                auto str = std::to_string(i); //itoa(i+1,s,10);
+                strcpy(s, str.c_str());
 		        strcpy(path[i+1],path[p+1]);
 		        strcat(path[i+1],"-X");
 		        strcat(path[i+1],s);
@@ -128,5 +130,5 @@ void main()
 	}
 	else
         cout<<"Такого шляху не існує"<<endl;
-    getch();
+    //getch();
 }
